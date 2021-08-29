@@ -13,16 +13,88 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <style>
+      .comments {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+      }
+      .comment {
+        border: 1px solid black;
+        display: grid;
+        /* grid-template-rows: repeat(2,1fr); */
+        /* grid-template-columns: repeat(6,1fr); */
+        /* grid-template-columns: auto auto auto auto; */
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
-    <h1 class="text-center text-success fw-bold">Comments</h1>
+    <div class="text-center">
+      <h1 class="text-success fw-bold mt-5">Comments</h1>
+      <button
+        id="comments-btn"
+        onclick="loadComment()"
+        class="btn btn-outline-success"
+      >
+        Show Comments
+      </button>
+    </div>
+    <div id="comments" class=""></div>
+    <div id="single-comment" class=""></div>
+    <!--  <span>id: ${comment.id}</span>
+             <h5>name: ${comment.name}</h5>
+             <h5>email: ${comment.email}</h5> -->
     <!-- script  -->
     <script>
-      console.log("connected ");
-      fetch("https://jsonplaceholder.typicode.com/posts/1/comments")
-        .then((response) => response.json())
-        .then((json) => console.log(json))
-        .catch((err) => console.log(err));
+      // console.log("connected ");
+      const loadComment = () => {
+        fetch("https://jsonplaceholder.typicode.com/posts/1/comments")
+          .then((response) => response.json())
+          .then((data) => displayComments(data))
+          .catch((err) => console.log(err));
+      };
+      loadComment();
+      const commentDiv = document.getElementById("comments");
+      const singleCommentDiv = document.getElementById("single-comment");
+
+      const displayComments = (comments) => {
+        // const commentDiv = document.getElementById("comments");
+        // console.log(conmments);
+        comments.forEach((comment) => {
+          // console.log(comment);
+          const div = document.createElement("div");
+          div.classList.add("comment");
+          div.innerHTML = `
+            <p onclick="loadCommentDetails('${comment.id}')">comment: ${comment.body}</p>
+          `;
+          commentDiv.appendChild(div);
+        });
+      };
+      //
+      const loadCommentDetails = (id) => {
+        console.log(id);
+        fetch(`https://jsonplaceholder.typicode.com/posts/${id}/comments`)
+          .then((response) => response.json())
+          .then((data) => displayCommentDetails(data))
+          .catch((err) => console.log(err));
+        // console.log(id)
+      };
+      const displayCommentDetails = (allComments) => {
+        console.log(allComments);
+        // console.log("its working")
+        allComments.forEach((comment) => {
+          console.log(comment);
+          const div = document.createElement("div");
+          div.classList.add("comment");
+          div.innerHTML = `
+            <span>id: ${comment.id}</span>
+             <h5>name: ${comment.name}</h5>
+             <h5>email: ${comment.email}</h5>
+          `;
+          singleCommentDiv.appendChild(div);
+        });
+      };
     </script>
   </body>
 </html>
